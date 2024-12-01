@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150">
+    <!-- Corps principal -->
+    <path d="M40,80 
+             C40,60 60,50 90,50 
+             C120,50 150,60 160,80 
+             C150,100 120,110 90,110 
+             C60,110 40,100 40,80" 
+          fill="#2A1F1D" stroke="#1A0F0D" stroke-width="2"/>
+    
+    <!-- Détails de la fourrure -->
+    <path d="M50,70 C60,65 70,63 80,65" fill="none" stroke="#3A2F2D" stroke-width="1"/>
+    <path d="M90,60 C100,58 110,59 120,62" fill="none" stroke="#3A2F2D" stroke-width="1"/>
+    <path d="M70,90 C80,88 90,89 100,91" fill="none" stroke="#3A2F2D" stroke-width="1"/>
+    
+    <!-- Tête -->
+    <path d="M150,80 
+             C165,75 175,70 180,65 
+             C185,60 185,75 180,80 
+             C175,85 170,83 165,80" 
+          fill="#2A1F1D" stroke="#1A0F0D" stroke-width="2"/>
+    
+    <!-- Œil -->
+    <circle cx="155" cy="70" r="3" fill="#000"/>
+    
+    <!-- Museau -->
+    <path d="M170,75 Q180,73 185,70" fill="none" stroke="#1A0F0D" stroke-width="2"/>
+    
+    <!-- Pattes avant bien définies -->
+    <path d="M60,80 L60,120 C60,125 65,125 65,120 L65,80" fill="#2A1F1D" stroke="#1A0F0D" stroke-width="2"/>
+    <path d="M140,80 L140,120 C140,125 145,125 145,120 L145,80" fill="#2A1F1D" stroke="#1A0F0D" stroke-width="2"/>
+    
+    <!-- Pattes arrière bien définies -->
+    <path d="M80,80 L80,120 C80,125 85,125 85,120 L85,80" fill="#2A1F1D" stroke="#1A0F0D" stroke-width="2"/>
+    <path d="M120,80 L120,120 C120,125 125,125 125,120 L125,80" fill="#2A1F1D" stroke="#1A0F0D" stroke-width="2"/>
+    
+    <!-- Queue -->
+    <path d="M50,80 Q45,75 40,70" fill="none" stroke="#2A1F1D" stroke-width="2"/>
+</svg>

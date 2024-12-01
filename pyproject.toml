@@ -1,0 +1,11 @@
+[project]
+name = "chasse-au-sanglier"
+version = "2.0.0"
+description = "Jeu de tir au sanglier avec interface web interactive, système de score et effets sonores"
+requires-python = ">=3.11"
+dependencies = [
+    "email-validator>=2.2.0",
+    "flask>=3.1.0",
+    "flask-sqlalchemy>=3.1.1",
+    "psycopg2-binary>=2.9.10",
+]

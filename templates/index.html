@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chasse au Sanglier</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="title-container">
+                    <img src="{{ url_for('static', filename='assets/fraidzy4vert.png') }}"
+                         alt="Fredzy"
+                         class="title-image"
+                         style="object-fit: contain;">
+                    <h1>Chasse au Sanglier ne touchez pas au Fredzy</h1>
+                    <img src="{{ url_for('static', filename='assets/SanglierjeuVert.png') }}" 
+                         alt="Sanglier" 
+                         class="title-image"
+                         style="object-fit: contain;">
+                </div>
+                <div class="game-stats mb-3">
+                    <span class="badge bg-primary me-2">Score: <span id="score">0</span></span>
+                    <span class="badge bg-warning me-2">Munitions: <span id="ammo">25</span></span>
+                    <span class="badge bg-info">Niveau: <span id="level">1</span></span>
+                </div>
+                <div class="game-controls mb-3">
+                    <button onclick="game.togglePause()" class="btn btn-warning me-2">Pause</button>
+                    <button onclick="game.restart()" class="btn btn-primary me-2">Redémarrer</button>
+                    <button onclick="game.openSettings()" class="btn btn-info">Paramètres</button>
+                </div>
+
+                <!-- Modal Paramètres -->
+                <div class="modal fade" id="settingsModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Paramètres du jeu</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="soundVolume" class="form-label">Volume des effets sonores Fredzy</label>
+                                    <input type="range" class="form-range" id="soundVolume" min="0" max="100" value="75">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gunSoundVolume" class="form-label">Volume général du fusil</label>
+                                    <input type="range" class="form-range" id="gunSoundVolume" min="0" max="100" value="50">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gunBassSoundVolume" class="form-label">Volume des basses (son grave)</label>
+                                    <input type="range" class="form-range" id="gunBassSoundVolume" min="0" max="100" value="75">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gunMidSoundVolume" class="form-label">Volume des mediums</label>
+                                    <input type="range" class="form-range" id="gunMidSoundVolume" min="0" max="100" value="50">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gunHighSoundVolume" class="form-label">Volume des aigus</label>
+                                    <input type="range" class="form-range" id="gunHighSoundVolume" min="0" max="100" value="25">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gameDifficulty" class="form-label">Difficulté du jeu</label>
+                                    <select class="form-select" id="gameDifficulty">
+                                        <option value="easy">Facile</option>
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="hard">Difficile</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="crosshairColor" class="form-label">Couleur du viseur</label>
+                                    <select class="form-select" id="crosshairColor">
+                                        <option value="red" selected>Rouge</option>
+                                        <option value="green">Vert</option>
+                                        <option value="blue">Bleu</option>
+                                        <option value="yellow">Jaune</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ammoCount" class="form-label">Nombre de munitions</label>
+                                    <input type="range" class="form-range" id="ammoCount" min="20" max="50" value="25">
+                                    <div class="d-flex justify-content-between">
+                                        <small>20</small>
+                                        <small id="ammoValue">25</small>
+                                        <small>50</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="button" class="btn btn-primary" onclick="game.saveSettings()">Sauvegarder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="gameCanvas"></canvas>
+                
+                <!-- Le tableau des meilleurs scores a été déplacé dans l'overlay de pause -->
+                <!-- High Scores Overlay -->
+                <div class="high-scores-overlay" style="display: none;">
+                    <h2>Meilleurs Scores</h2>
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Joueur</th>
+                                <th>Score</th>
+                                <th>Niveau</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="highScoresTable">
+                            {% for score in high_scores %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ score.player_name }}</td>
+                                <td>{{ score.score }}</td>
+                                <td>{{ score.level }}</td>
+                                <td>{{ score.date_created.strftime('%Y-%m-%d') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <button onclick="game.togglePause()" class="btn btn-success mt-3">Retour au jeu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour sauvegarder le score -->
+    <div class="modal fade" id="saveScoreModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sauvegarder votre score</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="playerName" class="form-label">Votre nom</label>
+                        <input type="text" class="form-control" id="playerName" maxlength="50" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="saveScoreButton">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>

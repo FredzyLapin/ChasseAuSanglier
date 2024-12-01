@@ -1,0 +1,29 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Python files
+*.py text diff=python
+
+# JavaScript files
+*.js text
+*.jsx text
+
+# Web files
+*.html text diff=html
+*.css text diff=css
+
+# Assets
+*.png binary
+*.jpg binary
+*.wav binary
+
+# Documentation
+*.md text diff=markdown
+
+# Config files
+*.toml text
+*.json text
+*.yml text
+*.yaml text
+.gitignore text
+.gitattributes text
