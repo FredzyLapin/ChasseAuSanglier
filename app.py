@@ -6,7 +6,13 @@ import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable cache during development
 db = SQLAlchemy(app)
+
+# Configuration du logging
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class HighScore(db.Model):
     __tablename__ = 'high_scores'
@@ -18,7 +24,9 @@ class HighScore(db.Model):
 
 @app.route('/')
 def index():
+    logger.info('Accès à la page d\'accueil')
     scores = HighScore.query.order_by(HighScore.score.desc()).limit(10).all()
+    logger.info(f'Nombre de scores chargés: {len(scores)}')
     return render_template('index.html', high_scores=scores)
 
 @app.route('/api/scores', methods=['POST'])

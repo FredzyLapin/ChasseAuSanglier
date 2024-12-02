@@ -671,7 +671,20 @@ class Game {
 
 // Initialiser le jeu
 const game = new Game();
-game.update();
+
+// Attendre le chargement complet de la page et des ressources
+window.addEventListener('load', () => {
+    // Vérifier que l'audio context est prêt
+    if (game.audioContext.state === 'suspended') {
+        game.audioContext.resume();
+    }
+    
+    // Démarrer la boucle de jeu
+    game.update();
+    
+    console.log('Jeu initialisé avec succès');
+    console.log('Audio Context State:', game.audioContext.state);
+});
 
 // Mettre à jour l'affichage du nombre de munitions lors du changement
 document.getElementById('ammoCount').addEventListener('input', function(e) {
