@@ -33,7 +33,7 @@ Experience an engaging hunting simulation where you must shoot wild boars while 
 
 2. Install dependencies:
 ```bash
-pip install -r requirements.txt
+pip install .
 ```
 
 3. Configure PostgreSQL database:
@@ -69,8 +69,8 @@ python app.py
 ## 🎨 Assets
 
 - SanglierjeuVert.png: Main boar image
-- fraidzy3.png, fraidzy4.png: Rabbit images (80x80, 98x65)
-- FraidzyPeur.wav: Rabbit sound effect
+- fraidzy3vert.png, fraidzy4vert.png, fraidzy6vert.png: Rabbit images
+- SONOREFREDZY.wav: Rabbit sound effect
 
 ## 📝 License
 

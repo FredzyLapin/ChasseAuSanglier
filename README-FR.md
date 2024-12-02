@@ -29,7 +29,7 @@ Un jeu de tir au sanglier avec interface web interactive intégrant un système 
 
 2. Installer les dépendances :
 ```bash
-pip install -r requirements.txt
+pip install .
 ```
 
 3. Configurer la base de données PostgreSQL :
@@ -65,8 +65,8 @@ python app.py
 ## 🎨 Assets
 
 - SanglierjeuVert.png : Image principale des sangliers
-- fraidzy3.png, fraidzy4.png : Images des lapins (80x80, 98x65)
-- FraidzyPeur.wav : Son des lapins
+- fraidzy3vert.png, fraidzy4vert.png, fraidzy6vert.png : Images des lapins
+- SONOREFREDZY.wav : Son des lapins
 
 ## 📝 License
 
