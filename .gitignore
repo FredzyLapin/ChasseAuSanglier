@@ -32,6 +32,7 @@ var/
 .breakpoints
 replit.nix
 poetry.lock
+uv.lock
 move_*.py
 
 # Temporary files
