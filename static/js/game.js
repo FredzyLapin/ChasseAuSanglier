@@ -670,20 +670,40 @@ class Game {
 }
 
 // Initialiser le jeu
+console.log('Début de l\'initialisation du jeu');
+
 const game = new Game();
 
 // Attendre le chargement complet de la page et des ressources
 window.addEventListener('load', () => {
-    // Vérifier que l'audio context est prêt
+    console.log('Événement load déclenché');
+    
+    // Vérifier les assets
+    console.log('Vérification des assets:');
+    console.log('- Sanglier:', '/static/assets/SanglierjeuVert.png');
+    console.log('- Lapins:', game.rabbitImages);
+    console.log('- Son:', '/static/assets/SONOREFREDZY.wav');
+    
+    // Vérifier l'état de l'audio
+    console.log('État initial AudioContext:', game.audioContext.state);
     if (game.audioContext.state === 'suspended') {
-        game.audioContext.resume();
+        console.log('Reprise de l\'AudioContext');
+        game.audioContext.resume().then(() => {
+            console.log('AudioContext repris avec succès:', game.audioContext.state);
+        });
     }
     
+    // Vérifier le canvas
+    console.log('Dimensions du canvas:', {
+        width: game.canvas.width,
+        height: game.canvas.height
+    });
+    
     // Démarrer la boucle de jeu
+    console.log('Démarrage de la boucle de jeu');
     game.update();
     
     console.log('Jeu initialisé avec succès');
-    console.log('Audio Context State:', game.audioContext.state);
 });
 
 // Mettre à jour l'affichage du nombre de munitions lors du changement

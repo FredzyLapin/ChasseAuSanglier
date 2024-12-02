@@ -53,5 +53,19 @@ def get_scores():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
+        try:
+            logger.info('Vérification de la connexion à la base de données...')
+            db.create_all()
+            from sqlalchemy import text
+            # Test simple query
+            test_query = db.session.execute(text('SELECT 1')).scalar()
+            logger.info('Connexion à la base de données établie avec succès')
+            logger.info('Vérification des tables...')
+            tables = db.session.execute(text('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\'')).fetchall()
+            logger.info(f'Tables trouvées: {[table[0] for table in tables]}')
+        except Exception as e:
+            logger.error(f'Erreur lors de la connexion à la base de données: {str(e)}')
+            raise
+
+    logger.info('Démarrage du serveur Flask...')
     app.run(host='0.0.0.0', port=3001, debug=False)
