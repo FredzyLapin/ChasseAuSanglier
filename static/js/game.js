@@ -670,40 +670,89 @@ class Game {
 }
 
 // Initialiser le jeu
-console.log('Début de l\'initialisation du jeu');
+console.log('[Game] Début de l\'initialisation du jeu');
 
+let assetsLoaded = 0;
+const totalAssets = 5; // 1 boar image + 3 rabbit images + 1 sound file
 const game = new Game();
 
-// Attendre le chargement complet de la page et des ressources
-window.addEventListener('load', () => {
-    console.log('Événement load déclenché');
-    
-    // Vérifier les assets
-    console.log('Vérification des assets:');
-    console.log('- Sanglier:', '/static/assets/SanglierjeuVert.png');
-    console.log('- Lapins:', game.rabbitImages);
-    console.log('- Son:', '/static/assets/SONOREFREDZY.wav');
+function checkAllAssetsLoaded() {
+    assetsLoaded++;
+    console.log(`[Game] Asset chargé (${assetsLoaded}/${totalAssets})`);
+    if (assetsLoaded === totalAssets) {
+        console.log('[Game] Tous les assets sont chargés');
+        startGame();
+    }
+}
+
+function startGame() {
+    console.log('[Game] Démarrage du jeu');
     
     // Vérifier l'état de l'audio
-    console.log('État initial AudioContext:', game.audioContext.state);
+    console.log('[Audio] État initial AudioContext:', game.audioContext.state);
     if (game.audioContext.state === 'suspended') {
-        console.log('Reprise de l\'AudioContext');
+        console.log('[Audio] Tentative de reprise de l\'AudioContext');
         game.audioContext.resume().then(() => {
-            console.log('AudioContext repris avec succès:', game.audioContext.state);
+            console.log('[Audio] AudioContext repris avec succès:', game.audioContext.state);
+        }).catch(error => {
+            console.error('[Audio] Erreur lors de la reprise de l\'AudioContext:', error);
         });
     }
     
     // Vérifier le canvas
-    console.log('Dimensions du canvas:', {
+    if (!game.canvas || !game.ctx) {
+        console.error('[Canvas] Erreur: Canvas ou contexte non initialisé');
+        return;
+    }
+    
+    console.log('[Canvas] Dimensions:', {
         width: game.canvas.width,
-        height: game.canvas.height
+        height: game.canvas.height,
+        actualWidth: game.canvas.offsetWidth,
+        actualHeight: game.canvas.offsetHeight
     });
     
     // Démarrer la boucle de jeu
-    console.log('Démarrage de la boucle de jeu');
-    game.update();
+    console.log('[Game] Démarrage de la boucle de jeu');
+    requestAnimationFrame(() => game.update());
     
-    console.log('Jeu initialisé avec succès');
+    console.log('[Game] Initialisation terminée avec succès');
+}
+
+// Attendre le chargement complet de la page et des ressources
+window.addEventListener('load', () => {
+    console.log('[Game] Événement load déclenché');
+    
+    // Charger l'image du sanglier
+    const boarImg = new Image();
+    boarImg.onload = checkAllAssetsLoaded;
+    boarImg.onerror = () => console.error('[Assets] Erreur de chargement: SanglierjeuVert.png');
+    boarImg.src = '/static/assets/SanglierjeuVert.png';
+    
+    // Charger les images des lapins
+    game.rabbitImages.forEach(src => {
+        const img = new Image();
+        img.onload = checkAllAssetsLoaded;
+        img.onerror = () => console.error(`[Assets] Erreur de chargement: ${src}`);
+        img.src = src;
+    });
+    
+    // Charger le son
+    fetch('/static/assets/SONOREFREDZY.wav')
+        .then(response => {
+            if (!response.ok) throw new Error('Erreur réseau');
+            return response.arrayBuffer();
+        })
+        .then(arrayBuffer => game.audioContext.decodeAudioData(arrayBuffer))
+        .then(audioBuffer => {
+            game.rabbitSound = audioBuffer;
+            checkAllAssetsLoaded();
+            console.log('[Audio] Son chargé avec succès');
+        })
+        .catch(error => {
+            console.error('[Audio] Erreur de chargement du son:', error);
+            checkAllAssetsLoaded(); // Continue quand même pour ne pas bloquer le jeu
+        });
 });
 
 // Mettre à jour l'affichage du nombre de munitions lors du changement
